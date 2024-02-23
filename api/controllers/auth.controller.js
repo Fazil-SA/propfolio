@@ -1,7 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import User from '../models/user.model.js';
 
-export const signup = async (req,res) => {
+export const signup = async (req,res,next) => {
     const {userName, email, password} = req.body;
     const hashedPassword = bcryptjs.hashSync(password, 10);
     const newUser = new User({userName, email, password: hashedPassword});
@@ -9,6 +9,7 @@ export const signup = async (req,res) => {
         await newUser.save();
         res.status(201).json('User added to database')
     } catch (error) {
-        res.status(500).json(error.message)
+        // Passing error to middleware written in index.js for throwing error more readably
+        next(error);
     }
 }
