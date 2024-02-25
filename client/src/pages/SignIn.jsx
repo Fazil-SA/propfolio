@@ -25,7 +25,8 @@ function SignIn() {
     axiosInstance.post('/api/auth/signin', form)
       .then((data) => {
         // setLoading(false);
-        dispatch(signInSuccess(data));
+        console.log("datadatadata",data.data)
+        dispatch(signInSuccess(data.data));
         navigate('/');
       }).catch((error) => {
         if(error.response.data.success === false) {
