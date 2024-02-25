@@ -16,7 +16,6 @@ function SignUp() {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("fffff",error)
     setLoading(true);
     axiosInstance.post('/api/auth/signup', form)
       .then(() => {
