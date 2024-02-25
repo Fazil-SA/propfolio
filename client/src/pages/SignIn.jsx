@@ -4,6 +4,7 @@ import { axiosInstance } from "../../../api/instance/axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlicer";
+import OAuth from "../components/OAuth";
 
 function SignIn() {
   const [form, setForm] = useState({});
@@ -23,10 +24,9 @@ function SignIn() {
     // setLoading(true);
     dispatch(signInStart());
     axiosInstance.post('/api/auth/signin', form)
-      .then((data) => {
+      .then((res) => {
         // setLoading(false);
-        console.log("datadatadata",data.data)
-        dispatch(signInSuccess(data.data));
+        dispatch(signInSuccess(res.data));
         navigate('/');
       }).catch((error) => {
         if(error.response.data.success === false) {
@@ -44,6 +44,7 @@ function SignIn() {
         <input type="text" placeholder='email' onChange={handleChange} id='email' className="rounded-lg border p-3"/>
         <input type="text" placeholder='password' onChange={handleChange} id='password' className="rounded-lg border p-3"/>
         <button className="bg-slate-700 text-white p-3 rounded-md uppercase hover:opacity-95 disabled:opacity-80">{loading ? "loading..." : "Sign in"}</button>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Dont have an account?</p>

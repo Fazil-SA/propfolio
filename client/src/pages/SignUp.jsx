@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { axiosInstance } from "../../../api/instance/axios";
 import { useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 
 function SignUp() {
   const [form, setForm] = useState({});
@@ -17,11 +18,17 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    if(!form.userName && !form.email && !form.password) {
+      setLoading(false);
+      setError("All fields are mandatory");
+      return;
+    }
     axiosInstance.post('/api/auth/signup', form)
       .then(() => {
         setLoading(false);
         navigate('/sign-in');
       }).catch((error) => {
+        console.log(error)
         if(error.response.data.success === false) {
           setLoading(false);
           setError(error.response.data.message);
@@ -37,6 +44,7 @@ function SignUp() {
         <input type="text" placeholder='email' onChange={handleChange} id='email' className="rounded-lg border p-3"/>
         <input type="text" placeholder='password' onChange={handleChange} id='password' className="rounded-lg border p-3"/>
         <button className="bg-slate-700 text-white p-3 rounded-md uppercase hover:opacity-95 disabled:opacity-80">{loading ? "loading..." : "Sign up"}</button>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Have an account?</p>
