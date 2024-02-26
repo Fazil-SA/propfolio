@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     },
     photo: {
         type: String,
-        default: "https://cdn.vectorstock.com/i/preview-1x/15/40/blank-profile-picture-image-holder-with-a-crown-vector-42411540.jpg"
+        default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
     },
 }, {timestamps: true});
 
