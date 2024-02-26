@@ -23,7 +23,7 @@ function SignIn() {
     e.preventDefault();
     // setLoading(true);
     dispatch(signInStart());
-    axiosInstance.post('/api/auth/signin', form)
+    axiosInstance.post('/api/auth/signin', form, {withCredentials: true})
       .then((res) => {
         // setLoading(false);
         dispatch(signInSuccess(res.data));

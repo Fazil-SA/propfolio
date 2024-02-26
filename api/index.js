@@ -9,9 +9,13 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  }));
+// app.use(cors());
+app.use(express.json());
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);

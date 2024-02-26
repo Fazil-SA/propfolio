@@ -1,15 +1,19 @@
 import { useRef, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
-import { app } from "../firebase"
+import { app } from "../firebase";
+import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlicer";
+import { axiosInstance } from "../../../api/instance/axios";
 
 function Profile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [file, setFile] = useState(null);
   const [filePerc, setFilePerc] = useState(null);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const dispatch = useDispatch();
   useEffect(() => {
     // When file changes start uploading so to detect changing write inside useEffect
     if(file) {
@@ -36,10 +40,29 @@ function Profile() {
       }
     );
   }
+  const handleChange = (e) => {
+    setFormData({...formData, [e.target.id]: e.target.value});
+    console.log(currentUser)
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(updateUserStart());
+    axiosInstance.post(`/api/user/update/${currentUser._id}`, formData, {withCredentials: true})
+    .then((res) => {
+      if(res.success == false) {
+        dispatch(updateUserFailure(error.message));
+      }
+      dispatch(updateUserSuccess(res.data));
+      setUpdateSuccess(true);
+    }).catch((error) => {
+      console.log(error)
+      dispatch(updateUserFailure(error.message));
+    })
+  }
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="font-semibold text-3xl my-3 text-center">Profile</h1>
-      <form className="flex flex-col">
+      <form onSubmit={handleSubmit} className="flex flex-col">
         <input ref={fileRef} onChange={(e) => setFile(e.target.files[0])} type="file" accept="image/*" hidden/>
         {/* Clicking image open up file upload by reffering to file input type */}
         <img onClick={() => fileRef.current.click()} className="w-24 h-24 mt-2 object-cover cursor-pointer self-center rounded-full" src={formData.photo || currentUser.photo} alt="profile" />
@@ -57,16 +80,18 @@ function Profile() {
           )
         }
         </p>
-        <input type="text" placeholder="username" className="mt-3 p-3 border rounded-lg" />
-        <input type="text" placeholder="email" className="mt-3 p-3 border rounded-lg" />
-        <input type="text" placeholder="password" className="mt-3 p-3 border rounded-lg" />
+        <input onChange={handleChange} type="text" defaultValue={currentUser.userName} placeholder="username" id="userName" className="mt-3 p-3 border rounded-lg" />
+        <input onChange={handleChange} type="text" defaultValue={currentUser.email} placeholder="email" id="email" className="mt-3 p-3 border rounded-lg" />
+        <input onChange={handleChange} type="text" placeholder="password" id="password" className="mt-3 p-3 border rounded-lg" />
+        <button className="uppercase bg-slate-700 hover:opacity-95 w-full mt-3 p-3 rounded-lg text-white">{loading ? "Loading..." : "Update"}</button>
       </form>
-      <button className="uppercase bg-slate-700 hover:opacity-95 w-full mt-3 p-3 rounded-lg text-white">Update</button>
       <button className="uppercase bg-green-700 hover:opacity-95 w-full mt-3 p-3 rounded-lg text-white">Create Listing</button>
       <div className="flex justify-between mt-3">
         <p className="text-red-600 cursor-pointer">Delete Account</p>
         <p className="text-red-600 cursor-pointer">Sign Out</p>
       </div>
+      <p className="text-red-700 mt-5">{error ? error : ''}</p>
+      <p className="text-green-700 mt-5">{updateSuccess ? 'User is updated successfully' : ''}</p>
     </div>
   )
 }
