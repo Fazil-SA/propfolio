@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const listingSchema = new mongoose.Schema(
     {
-        name: {
+        title: {
             type: String,
             required: true
         },
@@ -18,7 +18,7 @@ const listingSchema = new mongoose.Schema(
             type: Number,
             required: true
         },
-        discountPrice: {
+        discountedPrice: {
             type: Number,
             required: true,
         },
@@ -48,7 +48,7 @@ const listingSchema = new mongoose.Schema(
         },
         userRef: {
             type: String,
-            required: String,
+            required: true,
         },
     }, {timestamps: true}
 );

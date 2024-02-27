@@ -5,7 +5,8 @@ import { app } from "../firebase";
 import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart,
          deleteUserSuccess, deleteUserFailure, signOutUserStart, signOutUserSuccess,
          signOutUserFailure  } from "../redux/user/userSlicer";
-import { axiosInstance } from "../../../api/instance/axios";
+import { axiosInstance } from "../instance/axios";
+import { Link } from "react-router-dom";
 
 function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -107,8 +108,8 @@ function Profile() {
         <input onChange={handleChange} type="text" defaultValue={currentUser.email} placeholder="email" id="email" className="mt-3 p-3 border rounded-lg" />
         <input onChange={handleChange} type="text" placeholder="password" id="password" className="mt-3 p-3 border rounded-lg" />
         <button className="uppercase bg-slate-700 hover:opacity-95 w-full mt-3 p-3 rounded-lg text-white">{loading ? "Loading..." : "Update"}</button>
+        <Link to={'/create-listing'} className="uppercase bg-green-700 hover:opacity-95 w-full mt-6 p-3 rounded-lg text-white text-center">Create Listing</Link>
       </form>
-      <button className="uppercase bg-green-700 hover:opacity-95 w-full mt-3 p-3 rounded-lg text-white">Create Listing</button>
       <div className="flex justify-between mt-3">
         <span onClick={handleDelete} className="text-red-600 cursor-pointer">Delete Account</span>
         <span onClick={handleSignOut} className="text-red-600 cursor-pointer">Sign Out</span>
