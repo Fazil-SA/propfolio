@@ -2,7 +2,9 @@ import { useRef, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
-import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlicer";
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart,
+         deleteUserSuccess, deleteUserFailure, signOutUserStart, signOutUserSuccess,
+         signOutUserFailure  } from "../redux/user/userSlicer";
 import { axiosInstance } from "../../../api/instance/axios";
 
 function Profile() {
@@ -42,7 +44,6 @@ function Profile() {
   }
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value});
-    console.log(currentUser)
   }
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -55,10 +56,32 @@ function Profile() {
       dispatch(updateUserSuccess(res.data));
       setUpdateSuccess(true);
     }).catch((error) => {
-      console.log(error)
       dispatch(updateUserFailure(error.message));
     })
   }
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    dispatch(deleteUserStart());
+    axiosInstance.post(`/api/user/delete/${currentUser._id}`, {}, {withCredentials: true})
+    .then(() => {
+      dispatch(deleteUserSuccess());
+    }).catch((error) => {
+      dispatch(deleteUserFailure(error.message));
+    })
+  }
+
+  const handleSignOut = (e) => {
+    e.preventDefault();
+    dispatch(signOutUserStart());
+    axiosInstance.get(`/api/auth/signout/${currentUser._id}`, {}, {withCredentials: true})
+    .then(() => {
+      dispatch(signOutUserSuccess());
+    }).catch((error) => {
+      dispatch(signOutUserFailure(error.message));
+    })
+  }
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="font-semibold text-3xl my-3 text-center">Profile</h1>
@@ -87,8 +110,8 @@ function Profile() {
       </form>
       <button className="uppercase bg-green-700 hover:opacity-95 w-full mt-3 p-3 rounded-lg text-white">Create Listing</button>
       <div className="flex justify-between mt-3">
-        <p className="text-red-600 cursor-pointer">Delete Account</p>
-        <p className="text-red-600 cursor-pointer">Sign Out</p>
+        <span onClick={handleDelete} className="text-red-600 cursor-pointer">Delete Account</span>
+        <span onClick={handleSignOut} className="text-red-600 cursor-pointer">Sign Out</span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ''}</p>
       <p className="text-green-700 mt-5">{updateSuccess ? 'User is updated successfully' : ''}</p>

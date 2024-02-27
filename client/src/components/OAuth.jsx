@@ -20,8 +20,8 @@ export default function OAuth() {
         email: result.user.email,
         photo: result.user.photoURL
       }
-      axiosInstance.post('/api/auth/google', AuthCred).then((res) => {
-        dispatch(signInSuccess(JSON.parse(res.config.data)));
+      axiosInstance.post('/api/auth/google', AuthCred, {withCredentials: true}).then((res) => {
+        dispatch(signInSuccess(res.data._doc));
         navigate('/');
       })
     } catch(error) {

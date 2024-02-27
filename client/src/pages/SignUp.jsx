@@ -28,7 +28,6 @@ function SignUp() {
         setLoading(false);
         navigate('/sign-in');
       }).catch((error) => {
-        console.log(error)
         if(error.response.data.success === false) {
           setLoading(false);
           setError(error.response.data.message);
