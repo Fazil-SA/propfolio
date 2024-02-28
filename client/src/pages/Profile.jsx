@@ -16,6 +16,8 @@ function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showListingError, setShowListingError] = useState('');
+  const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
     // When file changes start uploading so to detect changing write inside useEffect
@@ -83,6 +85,18 @@ function Profile() {
     })
   }
 
+  const handleShowListings = (e) => {
+    e.preventDefault();
+    setShowListingError('');
+    axiosInstance.get(`/api/user/listings/${currentUser._id}`, {withCredentials: true})
+    .then((res) => {
+      setUserListings(res.data);
+    }).catch((error) => {
+      console.log(error)
+      setShowListingError(error.message);
+    })
+  }
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="font-semibold text-3xl my-3 text-center">Profile</h1>
@@ -115,7 +129,28 @@ function Profile() {
         <span onClick={handleSignOut} className="text-red-600 cursor-pointer">Sign Out</span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ''}</p>
+      <p className="text-red-700 mt-5">{showListingError ? showListingError : ''}</p>
       <p className="text-green-700 mt-5">{updateSuccess ? 'User is updated successfully' : ''}</p>
+      <button onClick={handleShowListings} className="flex text-green-700 w-full justify-center">Show Listings</button>
+      {
+        userListings && userListings.length > 0 && (
+          <div>
+            <h1 className="text-3xl font-semibold flex text-center w-full justify-center p-3">Your listings</h1>
+            {userListings.map((listing) => (
+              <div className="border border-slate-300 rounded-lg p-3 mt-3 flex justify-between" key={listing.id}>
+                <div className="flex items-center">
+                  <img className="w-16 rounded-lg" src={listing.imageUrls[0]} alt="image" />
+                  <span className="p-2 font-semibold uppercase">{listing.title}</span>
+                </div>
+                <div className="flex flex-col">
+                  <button className="uppercase p-1 text-md text-red-700">Delete</button>
+                  <button className="uppercase p-1 text-md text-green-700">Edit</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      }
     </div>
   )
 }
