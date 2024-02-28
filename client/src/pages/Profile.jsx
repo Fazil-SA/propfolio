@@ -97,6 +97,17 @@ function Profile() {
     })
   }
 
+  const handleDeleteUserListings = (listingId) => {
+      axiosInstance.post(`/api/listing/delete/${listingId}`,{}, {withCredentials: true})
+      .then(() => {
+        setUserListings((prev) => {
+          prev.filter((listing) => listing._id !== listingId);
+        })
+      }).catch((error) => {
+        console.log(error.message);
+      })
+  }
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="font-semibold text-3xl my-3 text-center">Profile</h1>
@@ -143,7 +154,7 @@ function Profile() {
                   <span className="p-2 font-semibold uppercase">{listing.title}</span>
                 </div>
                 <div className="flex flex-col">
-                  <button className="uppercase p-1 text-md text-red-700">Delete</button>
+                  <button type="button" onClick={() => handleDeleteUserListings(listing._id)} className="uppercase p-1 text-md text-red-700">Delete</button>
                   <button className="uppercase p-1 text-md text-green-700">Edit</button>
                 </div>
               </div>
