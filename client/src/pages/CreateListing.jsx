@@ -107,7 +107,6 @@ const handleChange = (e) => {
             [e.target.id]: e.target.value,
         })
     }
-
 }
 
 const handleFormSubmit = async (e) => {
