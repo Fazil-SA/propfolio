@@ -194,11 +194,11 @@ const handleFormSubmit = async (e) => {
                     <span>Images:</span>
                     <span className="text-gray-600">The first image will be the cover (max 6)</span>
                 </div>
-                <div className="mt-5 flex gap-4">
-                    <div className="border p-3 border-gray-300 ">
+                <div className="mt-2">
+                    <div className="border p-3 border-gray-300 mt-2">
                         <input onChange={(e) => setFiles(e.target.files)} type="file" accept="image/*" multiple/>
                     </div>
-                    <button type="button" onClick={handleImageSubmit} className="uppercase hover:opacity-95 text-green-600 border border-green-600 p-3 rounded-md w-full">{uploading ? "Uploading" : "Upload"}</button>
+                    <button type="button" onClick={handleImageSubmit} className="mt-2 uppercase hover:opacity-95 text-green-600 border border-green-600 p-3 rounded-md w-full">{uploading ? "Uploading" : "Upload"}</button>
                 </div>
             <p className="text-red-700 mt-3">{imageUploadError && imageUploadError}</p>
             {
@@ -210,7 +210,7 @@ const handleFormSubmit = async (e) => {
                 ))
             }
             <p className="text-red-700">{error && error}</p>
-            <button disabled={loading || uploading} className="mt-5 w-full bg-slate-700 uppercase p-3 border rounded-lg text-white hover:opacity-95">{loading ? "Creating" : "Create Listing"}</button>
+            <button disabled={loading || uploading} className="mt-1 w-full bg-slate-700 uppercase p-3 border rounded-lg text-white hover:opacity-95">{loading ? "Creating" : "Create Listing"}</button>
             </div>  
 
         </form>
