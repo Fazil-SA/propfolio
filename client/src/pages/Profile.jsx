@@ -151,7 +151,7 @@ function Profile() {
               <div className="border border-slate-300 rounded-lg p-3 mt-3 flex justify-between" key={listing.id}>
                 <div className="flex items-center">
                   <img className="w-16 rounded-lg" src={listing.imageUrls[0]} alt="image" />
-                  <span className="p-2 font-semibold uppercase">{listing.title}</span>
+                  <Link to={`/listing/${listing._id}`}><span className="p-2 cursor-pointer font-semibold uppercase">{listing.title}</span></Link>
                 </div>
                 <div className="flex flex-col">
                   <button type="button" onClick={() => handleDeleteUserListings(listing._id)} className="uppercase p-1 text-md text-red-700">Delete</button>
