@@ -91,6 +91,7 @@ function Profile() {
     axiosInstance.get(`/api/user/listings/${currentUser._id}`, {withCredentials: true})
     .then((res) => {
       setUserListings(res.data);
+      console.log(userListings)
     }).catch((error) => {
       console.log(error)
       setShowListingError(error.message);
@@ -142,7 +143,7 @@ function Profile() {
       <p className="text-red-700 mt-5">{error ? error : ''}</p>
       <p className="text-red-700 mt-5">{showListingError ? showListingError : ''}</p>
       <p className="text-green-700 mt-5">{updateSuccess ? 'User is updated successfully' : ''}</p>
-      <button onClick={handleShowListings} className="flex text-green-700 w-full justify-center">Show Listings</button>
+      <button onClick={handleShowListings} className="flex text-green-700 w-full justify-center">{userListings.length ? ('Show Listings') : (<span className="text-gray-500">No listings found</span>)}</button>
       {
         userListings && userListings.length > 0 && (
           <div>
