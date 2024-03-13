@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from "../instance/axios";
+import ListingItem from '../components/ListingItem';
 
 function Search() {
   const navigate = useNavigate();
@@ -16,9 +17,6 @@ function Search() {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  console.log(listings);
-  console.log(sidebardata)
-
   const handleChange = (e) => {
     if(e.target.id === 'all' || e.target.id === 'sale' || e.target.id === 'rent') {
         setSidebardata({...sidebardata, type: e.target.id});
@@ -148,8 +146,24 @@ function Search() {
                 <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95'>Search</button>
             </form>
         </div>
-        <div>
+        <div className='flex-1'>
             <h1 className='text-3xl font-semibold border-b text-slate-700 mt-5 p-3'>Listing Results</h1>
+            <div className='p-5 flex flex-wrap gap-4'>
+                { !loading && listings.length === 0 && (
+                        <p className='text-xl text-slate-700'>No listing found!</p>
+                    )
+                }
+                {
+                    loading && (
+                        <p className='text-xl text-slate-700 text-center items-center w-full'>Loading...</p>
+                    )
+                }
+                {
+                    !loading && listings && listings.map((listing) => (
+                        <ListingItem key={listing._id} listing={listing} />
+                    ))
+                }
+            </div>
         </div>
     </div>
   )
