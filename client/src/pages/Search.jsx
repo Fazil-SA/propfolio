@@ -17,6 +17,7 @@ function Search() {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showMore, setShowMore] = useState(false);
   const handleChange = (e) => {
     if(e.target.id === 'all' || e.target.id === 'sale' || e.target.id === 'rent') {
         setSidebardata({...sidebardata, type: e.target.id});
@@ -83,11 +84,17 @@ function Search() {
 
     const fetchListings = async () => {
         setLoading(true);
+        setShowMore(false);
         const searchQuery = urlParams.toString();
         axiosInstance.get(`api/listing/get?${searchQuery}`, {withCredentials: true})
         .then((res) => {
             setListings(res.data);
             setLoading(false);
+            if(res.data.length > 8) {
+                setShowMore(true);
+            } else {
+                setShowMore(false);
+            }
         })
     }
 
@@ -95,6 +102,23 @@ function Search() {
 
   }, [location.search]);
 
+  const onShowMoreClick = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('startIndex', startIndex);
+    const searchQuery = urlParams.toString();
+    axiosInstance.get(`api/listing/get?${searchQuery}`, {withCredentials: true})
+        .then((res) => {
+            setListings([...listings, ...res.data]);
+            setLoading(false);
+            if(res.data.length < 9) {
+                setShowMore(false);
+            } else {
+                setShowMore(false);
+            }
+        })
+  }
 
   return (
     <div className='flex flex-col md:flex-row'>
@@ -162,6 +186,11 @@ function Search() {
                     !loading && listings && listings.map((listing) => (
                         <ListingItem key={listing._id} listing={listing} />
                     ))
+                }
+                {
+                    showMore && (
+                        <button onClick={onShowMoreClick} className='text-green-700 hover:underline p-7 text-center w-full'>Show More</button>
+                    )
                 }
             </div>
         </div>
